@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grill: get grilled on your repo before your examiner does</title>
+  <meta name="description" content="Grill is an automated viva for colleges: grounded questions on a student's own code, then a live change request graded by real tests in a sandbox.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Header + navigation -->
+  <header class="site-header" id="top">
+    <nav class="nav container" aria-label="Main">
+      <a class="logo" href="#top" aria-label="Grill home">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28">
+            <rect x="2" y="2" width="28" height="28" rx="7" fill="currentColor"/>
+            <path d="M9 12h14M9 16h14M9 20h14" stroke="#16120f" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Grill
+      </a>
+
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#examiners">For examiners</a></li>
+        <li><a href="#badge">Badge</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a class="btn btn-small" href="#cta">Join the pilot</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Automated viva for colleges</p>
+          <h1>Get grilled on your repo <span class="ember">before your examiner does.</span></h1>
+          <p class="lead">
+            Grill reads a student's own codebase, asks timed questions that cite real files and lines,
+            then sets a live change request graded by hidden tests in a sandbox. Not by model opinion.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="#cta">Join the pilot cohort</a>
+            <a class="btn btn-ghost" href="#how">See how it works</a>
+          </div>
+          <ul class="hero-points">
+            <li>Repo link to skill report in under 30 minutes</li>
+            <li>Every question grounded in a real file and line</li>
+            <li>Examiner override with an audit trail</li>
+          </ul>
+        </div>
+
+        <div class="viva-card" aria-label="Example viva question">
+          <div class="viva-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="viva-title">Viva · question 3 of 8</span>
+            <span class="timer" data-timer="90">1:30</span>
+          </div>
+          <div class="viva-body">
+            <p class="cite"><code>src/routes/orders.js</code> · lines 42–58</p>
+<pre class="code"><code><span class="ln">42</span> <span class="kw">router</span>.post(<span class="str">'/'</span>, <span class="kw">async</span> (req, res) =&gt; {
+<span class="ln">43</span>   <span class="kw">const</span> conn = <span class="kw">await</span> pool.getConnection();
+<span class="ln">44</span>   <span class="kw">await</span> conn.beginTransaction();
+<span class="ln">45</span>   <span class="cm">// ...</span></code></pre>
+            <p class="question">
+              You open a transaction on line 44. What happens to the stock count if the insert on
+              line 51 throws, and where is the connection released?
+            </p>
+            <div class="answer" aria-hidden="true">
+              <span class="typing"></span><span class="caret"></span>
+            </div>
+            <p class="viva-foot">Paste disabled · follow-up builds on this answer</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem">
+      <div class="container narrow">
+        <h2>AI can ship the app. Can the student explain it?</h2>
+        <p>
+          The only reliable check today is a manual viva with a live change request. It's slow,
+          it varies between examiners, and nobody can run one for every student. Grill runs it for
+          the whole cohort and leaves the final call with the examiner.
+        </p>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <div class="container">
+        <p class="eyebrow">How it works</p>
+        <h2>Three steps, one pinned commit</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-no">01</span>
+            <h3>Submit a repo</h3>
+            <p>Sign in with GitHub, join a cohort with an invite code, and submit a repo and branch. Grill pins it to a commit hash so it can't change mid-viva, then analyses it with live progress.</p>
+          </li>
+          <li class="step">
+            <span class="step-no">02</span>
+            <h3>Answer the viva</h3>
+            <p>6 to 10 timed questions, each citing a file and line from your code. Follow-ups build on what you just said, and pasting is disabled.</p>
+          </li>
+          <li class="step">
+            <span class="step-no">03</span>
+            <h3>Ship a change request</h3>
+            <p>A small feature on your own code, written in the browser editor. Run the visible tests as often as you like; hidden tests in a sandbox decide the grade.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section section-alt" id="features">
+      <div class="container">
+        <p class="eyebrow">Features</p>
+        <h2>The model proposes. The tests decide.</h2>
+        <div class="feature-grid">
+          <article class="feature">
+            <h3>Grounded questions</h3>
+            <p>Every question and judgement must reference a file and line that exists at the pinned commit. Code checks this before anything is shown.</p>
+          </article>
+          <article class="feature">
+            <h3>Test-graded change requests</h3>
+            <p>Hidden tests must fail on the original code and pass on a reference solution before a task is ever shown, so no task is impossible or already done.</p>
+          </article>
+          <article class="feature">
+            <h3>Locked-down sandbox</h3>
+            <p>A fresh container per run: no network, non-root, read-only image, CPU and memory limits, 30 seconds, then destroyed.</p>
+          </article>
+          <article class="feature">
+            <h3>Consistent scoring</h3>
+            <p>Rubrics stored as data, low-temperature structured output, multiple passes averaged. Re-scoring a session stays within ±5%.</p>
+          </article>
+          <article class="feature">
+            <h3>Evidence on every score</h3>
+            <p>Each judgement links to its question, the answer and the code it is about. Students see why they got the score they got.</p>
+          </article>
+          <article class="feature">
+            <h3>Works when the API doesn't</h3>
+            <p>Analysis is cached per commit and a recorded-session fallback keeps demos and exams running through a model outage.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Examiners -->
+    <section class="section" id="examiners">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">For examiners</p>
+          <h2>You stay in charge of the grade</h2>
+          <p>AI scores are advisory until you confirm them. Run a whole cohort, then spend your time on the sessions that need you.</p>
+          <ul class="checks">
+            <li>Create cohorts with an invite code, deadline and question count</li>
+            <li>Pick or edit the rubric and its weights</li>
+            <li>Watch session status across the cohort</li>
+            <li>Override any score with a written reason, logged in the audit trail</li>
+            <li>Export cohort results as CSV</li>
+          </ul>
+        </div>
+        <div class="table-card" role="region" aria-label="Example cohort overview" tabindex="0">
+          <table>
+            <caption>CSC413 · Section B <span class="muted">(sample data)</span></caption>
+            <thead>
+              <tr><th scope="col">Student</th><th scope="col">Status</th><th scope="col">Viva</th><th scope="col">Tests</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Student 01</td><td><span class="pill ok">Confirmed</span></td><td>82</td><td>5/5</td></tr>
+              <tr><td>Student 02</td><td><span class="pill warn">Review</span></td><td>58</td><td>2/5</td></tr>
+              <tr><td>Student 03</td><td><span class="pill live">In viva</span></td><td>–</td><td>–</td></tr>
+              <tr><td>Student 04</td><td><span class="pill ok">Overridden</span></td><td>74 → 70</td><td>4/5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Badge plugin demo -->
+    <section class="section section-alt" id="badge">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">Plugin</p>
+          <h2>A “Verified” badge for your README</h2>
+          <p>
+            The Grill badge is a small vanilla JavaScript plugin. Drop one script tag into a portfolio
+            and add a <code>data-grill-badge</code> element. It renders inside a Shadow DOM, so your
+            site's CSS can't break it and it can't break yours.
+          </p>
+<pre class="snippet"><code>&lt;script src="grill-badge.js"&gt;&lt;/script&gt;
+&lt;div data-grill-badge
+     data-user="student01"
+     data-repo="shop-api"
+     data-score="82"
+     data-commit="a1b2c3d"&gt;&lt;/div&gt;</code></pre>
+        </div>
+
+        <div class="badge-demo">
+          <div class="badge-preview" id="badge-preview">
+            <div data-grill-badge data-user="student01" data-repo="shop-api" data-score="82" data-commit="a1b2c3d"></div>
+          </div>
+          <form class="badge-form" id="badge-form">
+            <label>Username <input name="user" value="student01" maxlength="24" autocomplete="off"></label>
+            <label>Repo <input name="repo" value="shop-api" maxlength="32" autocomplete="off"></label>
+            <label>Score <input name="score" type="number" min="0" max="100" value="82"></label>
+            <label>Theme
+              <select name="theme">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </label>
+          </form>
+          <p class="muted small">Try it: the badge updates as you type, through the plugin's <code>GrillBadge.update()</code> API.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" id="roadmap">
+      <div class="container">
+        <p class="eyebrow">Roadmap</p>
+        <h2>From course project to pilot cohort</h2>
+        <ol class="timeline">
+          <li><span class="when">Nov 2026</span><h3>Start</h3><p>Team formed and problem statement approved.</p></li>
+          <li><span class="when">Nov – Dec</span><h3>Foundations</h3><p>App shell, domain logic in JS, badge widget. Schema and API reference by 22 Dec.</p></li>
+          <li><span class="when">Jan 2027</span><h3>React build + sandbox</h3><p>React screens on a mock API, and the sandbox as a standalone CLI that passes hostile tests.</p></li>
+          <li><span class="when">Feb 2027</span><h3>Backend</h3><p>Express, MySQL job queue, task validation, scoring. All acceptance tests pass.</p></li>
+          <li><span class="when">Mar 2027</span><h3>Launch</h3><p>Final demo, public repo, first pilot cohort. PR mode for dev teams comes after.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-alt" id="faq">
+      <div class="container narrow">
+        <p class="eyebrow">FAQ</p>
+        <h2>Questions</h2>
+        <details>
+          <summary>Does Grill detect AI-written code?</summary>
+          <p>No. Grill measures understanding, not authorship. It's fine if a tool helped write the code, as long as the student can explain and change it.</p>
+        </details>
+        <details>
+          <summary>Can't students just ask another AI during the viva?</summary>
+          <p>Time limits, disabled paste, follow-ups that depend on earlier answers and a change request on their own code make it much harder. It raises the bar; it doesn't claim to make cheating impossible.</p>
+        </details>
+        <details>
+          <summary>Which languages are supported?</summary>
+          <p>JavaScript and Node.js for the first release. Python and Java are planned later.</p>
+        </details>
+        <details>
+          <summary>What if my repo has no tests?</summary>
+          <p>That's fine. Grill brings its own test harness built on <code>node:test</code> and calls your exported functions or HTTP routes directly.</p>
+        </details>
+        <details>
+          <summary>Can I delete my data?</summary>
+          <p>Yes. Students can delete their sessions and profile at any time.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="cta">
+      <div class="container narrow">
+        <h2>Run your next viva on Grill</h2>
+        <p>We're looking for one cohort to pilot Grill as a pre-viva check in spring 2027.</p>
+        <form class="cta-form" id="cta-form" novalidate>
+          <label class="sr-only" for="cta-email">College email</label>
+          <input id="cta-email" type="email" name="email" placeholder="you@college.edu" required>
+          <button class="btn" type="submit">Register interest</button>
+        </form>
+        <p class="form-msg" id="cta-msg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="logo" href="#top">
+          <span class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="24" height="24">
+              <rect x="2" y="2" width="28" height="28" rx="7" fill="currentColor"/>
+              <path d="M9 12h14M9 16h14M9 20h14" stroke="#16120f" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Grill
+        </a>
+        <p class="muted small">An automated viva with a live, test-graded change request. Built for CSC413-8 Honours, Christ University.</p>
+      </div>
+      <nav aria-label="Product">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#badge">Badge plugin</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Project">
+        <h4>Project</h4>
+        <ul>
+          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#cta">Join the pilot</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p class="small muted">© <span id="year">2026</span> Grill · Atharva Gupta</p>
+      <a class="small" href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="js/grill-badge.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
