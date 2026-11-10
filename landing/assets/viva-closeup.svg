@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="t d">
+<title id="t">Close-up of a Grill viva question on a phone</title>
+<desc id="d">Only the question card: a large timer showing 1:12 left, the cited lines 44 and 51, and the question text.</desc>
+<rect width="800" height="1000" fill="#16120f"/>
+<rect x="40" y="40" width="720" height="920" rx="40" fill="#26201b" stroke="#3a312a" stroke-width="2"/>
+<text x="90" y="120" font-family="Inter, sans-serif" font-size="30" fill="#b3a597">Question 3 of 8</text>
+<circle cx="400" cy="300" r="120" fill="none" stroke="#3a312a" stroke-width="20"/>
+  <circle cx="400" cy="300" r="120" fill="none" stroke="#ff7a2f" stroke-width="20" stroke-linecap="round" stroke-dasharray="603.1857894892403 753.9822368615503" transform="rotate(-90 400 300)"/>
+  <text x="400" y="322.4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="64" font-weight="500" fill="#f3ece4">1:12</text>
+<text x="400" y="480" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" fill="#ff7a2f">left on this question</text>
+<rect x="90" y="530" width="620" height="64" rx="14" fill="#16120f"/>
+<text x="400" y="572" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="26" fill="#ffb37d">orders.js · lines 44 + 51</text>
+<text font-family="Inter, sans-serif" font-size="40" font-weight="600" fill="#f3ece4">
+<tspan x="90" y="670">If the insert on line 51</tspan><tspan x="90" y="724">throws, what happens to</tspan><tspan x="90" y="778">the stock count?</tspan></text>
+<rect x="90" y="840" width="620" height="76" rx="18" fill="#ff7a2f"/><text x="400" y="890" text-anchor="middle" font-family="Inter, sans-serif" font-size="30" font-weight="600" fill="#16120f">Answer</text>
+</svg>

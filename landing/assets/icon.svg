@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t">
+  <title id="t">Grill</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a221c"/>
+      <stop offset="1" stop-color="#16120f"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff5a1f"/>
+      <stop offset="0.6" stop-color="#ff7a2f"/>
+      <stop offset="1" stop-color="#ffc48f"/>
+    </linearGradient>
+    <linearGradient id="bar" gradientUnits="userSpaceOnUse" x1="132" y1="0" x2="380" y2="0">
+      <stop offset="0" stop-color="#ffb37d"/>
+      <stop offset="0.5" stop-color="#ff7a2f"/>
+      <stop offset="1" stop-color="#ffb37d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.72" r="0.5">
+      <stop offset="0" stop-color="#ff7a2f" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ff7a2f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- tile -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg)"/>
+  <rect x="17.5" y="17.5" width="477" height="477" rx="110.5" fill="none" stroke="#3a312a" stroke-width="3"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#glow)"/>
+
+  <!-- flame: the question being asked -->
+  <path d="M256 92
+           C 290 140, 336 168, 330 230
+           C 326 268, 296 290, 256 290
+           C 216 290, 186 268, 182 230
+           C 178 194, 204 172, 220 146
+           C 226 176, 240 186, 252 186
+           C 246 150, 244 122, 256 92 Z"
+        fill="url(#ember)"/>
+  <path d="M256 196
+           C 274 220, 292 236, 288 258
+           C 285 274, 272 282, 256 282
+           C 240 282, 227 274, 224 258
+           C 221 240, 238 226, 256 196 Z"
+        fill="#ffe2c4" opacity="0.9"/>
+
+  <!-- grate: the code under test -->
+  <g stroke-linecap="round" stroke-width="30">
+    <line x1="132" y1="330" x2="380" y2="330" stroke="url(#bar)"/>
+    <line x1="132" y1="384" x2="380" y2="384" stroke="#f3ece4"/>
+    <line x1="132" y1="438" x2="300" y2="438" stroke="#f3ece4" opacity="0.55"/>
+  </g>
+  <!-- pass tick on the last bar -->
+  <path d="M332 438 l18 18 l34 -40" fill="none" stroke="#5fcf8a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,56 @@
+WEBVTT
+Kind: captions
+Language: en
+
+NOTE
+Captions for viva-tour.webm, written by hand for this lab.
+Two voices: "Grill" (the automated examiner) and "Student".
+Class .sfx marks sound cues, class .code marks code identifiers.
+Cues 4-7 use line:8% so captions move to the top of the frame
+while the viva screen shows the answer box at the bottom.
+
+1
+00:00:00.500 --> 00:00:04.800
+<v Student>I'm submitting my shop-api repo, main branch.
+
+2
+00:00:05.000 --> 00:00:08.800
+<v Grill>Pinned at commit <c.code>a1b2c3d</c>.
+Every question will cite this exact code.
+
+3
+00:00:09.000 --> 00:00:14.800
+<v Grill>I found a transaction with no rollback.
+Writing eight questions about your own lines.
+
+4
+00:00:15.000 --> 00:00:19.800 line:8%
+<v Grill>You open a transaction on line 44. If the insert
+on line 51 throws, what happens to the stock count?
+
+5
+00:00:20.000 --> 00:00:23.800 line:8%
+<v Student>The UPDATE already ran, so stock drops
+but no order row exists.
+
+6
+00:00:24.000 --> 00:00:26.500 line:8%
+<c.sfx>[timer beeps three times: 10 seconds left]</c>
+
+7
+00:00:26.600 --> 00:00:28.900 line:8%
+<v Student>And <c.code>conn.release()</c> is missing on both paths.
+
+8
+00:00:29.000 --> 00:00:33.100
+<v Grill>Change request: a failed order must leave
+the stock unchanged. Always release the connection.
+
+9
+00:00:33.200 --> 00:00:36.800
+<c.sfx>[chime]</c> <v Grill>Hidden tests in the sandbox: 4 of 5 passed.
+
+10
+00:00:37.000 --> 00:00:41.800
+<v Grill>Viva 82, provisional.
+Your examiner confirms or overrides it.

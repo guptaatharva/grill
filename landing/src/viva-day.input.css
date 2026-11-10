@@ -1,0 +1,290 @@
+/*
+ * Grill · viva-day page (CSC413 Lab 2) · Tailwind source.
+ * Build: npm run build:viva  ->  landing/css/viva-day.css (the only stylesheet
+ * viva-day.html loads). The rest of the site uses css/styles.css and is untouched.
+ *
+ * Most styling is Tailwind utility classes in viva-day.html. This file holds:
+ *   1. colour tokens, switched by media queries (scheme, contrast)
+ *   2. custom variants named after Grill situations (examiner, extra-time, ...)
+ *   3. the few things utilities can't express: ::cue, ::marker text,
+ *      the CSS-only countdown, and the A4 print layout.
+ */
+/* Scan only viva-day.html, so classes from the other pages in landing/
+   (dashboard.html, index.html) never end up in this stylesheet. */
+@import "tailwindcss" source(none);
+@source "../viva-day.html";
+
+/* ---------- 1. Tokens ---------------------------------------------------- */
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-panel: var(--c-panel);
+  --color-card: var(--c-card);
+  --color-line: var(--c-line);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-ember: var(--c-ember);
+  --color-on-ember: var(--c-on-ember);
+  --color-ok: var(--c-ok);
+  --color-warn: var(--c-warn);
+  --color-bad: var(--c-bad);
+  --color-live: var(--c-live);
+  --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-head: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* Default: Grill's dark brand, the way students see it in a dim lab. */
+:root {
+  color-scheme: dark;
+  --c-bg: #16120f;
+  --c-panel: #1e1915;
+  --c-card: #26201b;
+  --c-line: #3a312a;
+  --c-ink: #f3ece4;
+  --c-muted: #b3a597;
+  --c-ember: #ff7a2f;
+  --c-on-ember: #16120f;
+  --c-ok: #5fcf8a;
+  --c-warn: #f2c14e;
+  --c-bad: #ff7b7b;
+  --c-live: #6fb6ff;
+  --border-w: 1px;
+}
+
+/* Context: an examiner projecting results in a bright staff room, or anyone
+   whose OS is set to light. Every colour is re-picked, not just inverted. */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --c-bg: #f7f2ec;
+    --c-panel: #ffffff;
+    --c-card: #fbf7f2;
+    --c-line: #d9cdc0;
+    --c-ink: #1e1915;
+    --c-muted: #5e5248;
+    --c-ember: #b93b06;
+    --c-on-ember: #ffffff;
+    --c-ok: #15703a;
+    --c-warn: #8a5300;
+    --c-bad: #b42318;
+    --c-live: #1d5fae;
+  }
+}
+
+/* Context: low vision / glare. Pure black and white, thicker borders.
+   The verdict chips also gain text symbols (see .verdict below), so meaning
+   never depends on colour alone. */
+@media (prefers-contrast: more) {
+  :root {
+    --c-bg: #000;
+    --c-panel: #000;
+    --c-card: #0a0a0a;
+    --c-line: #fff;
+    --c-ink: #fff;
+    --c-muted: #f0f0f0;
+    --c-ember: #ffa564;
+    --c-ok: #7dffae;
+    --c-warn: #ffe066;
+    --c-bad: #ffa0a0;
+    --border-w: 2px;
+  }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: light) {
+  :root {
+    --c-bg: #fff;
+    --c-panel: #fff;
+    --c-card: #fff;
+    --c-line: #000;
+    --c-ink: #000;
+    --c-muted: #1a1a1a;
+    --c-ember: #8a2c00;
+    --c-ok: #0b5a2b;
+    --c-warn: #6b4000;
+    --c-bad: #8f1a10;
+  }
+}
+
+/* ---------- 2. Custom variants (each one is a Grill situation) ----------- */
+
+/* Role chosen in step 1. :has() on <body> lets one radio restyle the page. */
+@custom-variant examiner (&:where(body:has(#role-examiner:checked) *));
+@custom-variant student  (&:where(body:has(#role-student:checked) *));
+/* Approved accommodation ticked in step 2. */
+@custom-variant extra-time (&:where(body:has(#extra-time:checked) *));
+/* Phone turned sideways to watch the tour: very little height to spare. */
+@custom-variant short-landscape (@media (orientation: landscape) and (height < 30rem));
+/* A real mouse that can hover (not a touch screen pretending). */
+@custom-variant hover-fine (@media (hover: hover) and (pointer: fine));
+
+/* ---------- 3a. Base ----------------------------------------------------- */
+
+@layer base {
+  html { background: var(--c-bg); }
+  body { border-width: 0; }
+  * { border-color: var(--c-line); }
+
+  /* Never remove focus: one strong, consistent ring everywhere. */
+  :focus-visible {
+    outline: 3px solid var(--c-ember);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection { background: var(--c-ember); color: var(--c-on-ember); }
+
+  /* Scroll smoothly only for people who haven't asked for less motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+}
+
+/* ---------- 3b. Captions (::cue) ---------------------------------------- */
+
+video::cue {
+  background: rgb(0 0 0 / 0.82);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+/* Speaker-aware: the automated examiner in ember, the student in blue,
+   so a deaf student can follow who asked and who answered. */
+video::cue(v[voice="Grill"])   { color: #ffb37d; }
+video::cue(v[voice="Student"]) { color: #a8d4ff; font-style: italic; }
+video::cue(.sfx)  { color: #f2c14e; font-style: normal; }
+video::cue(.code) { font-family: var(--font-mono); color: #9cf0bd; }
+
+@media (prefers-contrast: more) {
+  video::cue { background: #000; font-size: 1.25rem; }
+  video::cue(v[voice="Student"]) { font-style: normal; text-decoration: underline; }
+}
+
+/* ---------- 3c. Components --------------------------------------------- */
+
+@layer components {
+  /* Question numbers come from the list counter: "Q1", "Q2", ... */
+  .questions > li::marker {
+    content: "Q" counter(list-item) "  ";
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--c-ember);
+  }
+
+  /* An answer box with nothing in it means the timer ran out. */
+  .answer:empty::before {
+    content: "No answer within the time limit. Scored 0 for this question; the follow-up was skipped.";
+    color: var(--c-warn);
+    font-style: normal;
+  }
+
+  /* Verdict chips: colour plus a symbol in high contrast, so the result
+     survives greyscale printing and colour-blindness. */
+  @media (prefers-contrast: more) {
+    .verdict { border-width: 2px; border-style: solid; }
+    .verdict[data-verdict="strong"]::before  { content: "✓ "; }
+    .verdict[data-verdict="partial"]::before { content: "~ "; }
+    .verdict[data-verdict="missed"]::before  { content: "✗ "; }
+  }
+
+  /* Step labels come from a counter: "Step 1", "Step 2", ... */
+  .steps { counter-reset: step; }
+  .step { counter-increment: step; }
+  .step-label::before {
+    content: "Step " counter(step) " · ";
+    color: var(--c-ember);
+    font-family: var(--font-mono);
+  }
+}
+
+/* ---------- 3d. CSS-only countdown ------------------------------------- */
+/* @property makes --left an integer the browser can animate; the counter
+   then prints it. Last 30 seconds turn amber, as in the real viva. */
+@property --left { syntax: "<integer>"; inherits: true; initial-value: 90; }
+@property --done { syntax: "<percentage>"; inherits: true; initial-value: 0%; }
+
+.countdown {
+  --total: 90;
+  animation: tick-90 90s linear infinite;
+  counter-reset: left var(--left);
+  background:
+    radial-gradient(closest-side, var(--c-card) 78%, transparent 79%),
+    conic-gradient(var(--ring, var(--c-ember)) calc(100% - var(--done)), var(--c-line) 0);
+}
+.countdown::after { content: counter(left) "s"; }
+@keyframes tick-90 {
+  0%      { --left: 90; --done: 0%;   --ring: var(--c-ember); }
+  66.6%   { --ring: var(--c-ember); }
+  66.7%   { --ring: var(--c-warn); }
+  100%    { --left: 0;  --done: 100%; --ring: var(--c-warn); }
+}
+/* Approved extra time: 1.5 x the allowance, same amber last 30 s. */
+body:has(#extra-time:checked) .countdown {
+  --left: 135;
+  animation-name: tick-135;
+  animation-duration: 135s;
+}
+@keyframes tick-135 {
+  0%      { --left: 135; --done: 0%;   --ring: var(--c-ember); }
+  77.7%   { --ring: var(--c-ember); }
+  77.8%   { --ring: var(--c-warn); }
+  100%    { --left: 0;   --done: 100%; --ring: var(--c-warn); }
+}
+
+/* Reduced motion: no ticking. The ring freezes at the full allowance and the
+   static legend below it (shown with motion-reduce:) explains the amber zone. */
+@media (prefers-reduced-motion: reduce) {
+  .countdown { animation: none; }
+}
+
+/* ---------- 3e. Print: the Viva Skill Report ---------------------------- */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm;
+    @top-left   { content: "Grill · Viva skill report"; font: 9pt sans-serif; color: #555; }
+    @top-right  { content: "CSC413 · Section B"; font: 9pt sans-serif; color: #555; }
+    @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 9pt sans-serif; color: #555; }
+  }
+
+  :root {
+    --c-bg: #fff; --c-panel: #fff; --c-card: #fff; --c-line: #999;
+    --c-ink: #000; --c-muted: #333; --c-ember: #000; --c-on-ember: #fff;
+    --c-ok: #000; --c-warn: #000; --c-bad: #000; --c-live: #000;
+    color-scheme: light;
+  }
+  body { font-size: 10.5pt; }
+
+  /* Every citation becomes a URL an examiner can type in to check the code. */
+  #report a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-family: var(--font-mono);
+    font-size: 8pt;
+    word-break: break-all;
+    color: #333;
+  }
+
+  /* A provisional score must never be mistaken for a final grade on paper.
+     position: fixed repeats the stamp on every printed page in Chrome. */
+  #report[data-state="provisional"]::before {
+    content: "PROVISIONAL · NOT A FINAL GRADE";
+    position: fixed;
+    top: 45%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    transform: rotate(-24deg);
+    font: 700 34pt var(--font-head);
+    color: rgb(0 0 0 / 0.09);
+    pointer-events: none;
+  }
+
+  /* On paper there is no hover: always print the reason for each verdict. */
+  .evidence { max-height: none !important; opacity: 1 !important; overflow: visible !important; }
+
+  .questions > li, .score-tile, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .verdict::before { content: "[" !important; }
+  .verdict::after  { content: "]"; }
+}

@@ -1,2 +1,4 @@
 .env
 PRD.md
+node_modules/
+dist/

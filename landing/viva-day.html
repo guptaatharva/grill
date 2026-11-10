@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grill · Viva day, CSC413 Section B</title>
+  <meta name="description" content="Grill viva day page: check in, see how the timed viva works, and read your skill report. Adapts to phone, touch, reduced motion, contrast, print and role, with no JavaScript.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="css/viva-day.css">
+</head>
+<!-- No JavaScript anywhere on this page. All state comes from radios,
+     checkboxes, :target links, <details> and popover, read by CSS. -->
+<body class="group/page min-h-screen bg-bg font-sans text-ink antialiased">
+  <a href="#main" class="sr-only z-50 rounded-lg bg-ember px-4 py-2 font-semibold text-on-ember focus:not-sr-only focus:fixed focus:left-3 focus:top-3">Skip to content</a>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-20 border-b-(length:--border-w) border-line bg-panel/95 backdrop-blur max-sm:static short-landscape:static print:hidden">
+    <nav class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6" aria-label="Page sections">
+      <a href="#main" class="flex items-center gap-2 font-head text-xl font-bold no-underline">
+        <img src="assets/icon.svg" alt="" width="32" height="32" class="size-8">
+        Grill
+      </a>
+      <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <li><a class="rounded px-1 py-2 text-muted underline-offset-4 hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3" href="#checkin">Check in</a></li>
+        <li><a class="rounded px-1 py-2 text-muted underline-offset-4 hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3" href="#clock">Clock</a></li>
+        <li><a class="rounded px-1 py-2 text-muted underline-offset-4 hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3" href="#tour">Tour</a></li>
+        <li><a class="rounded px-1 py-2 text-muted underline-offset-4 hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3" href="#report">Report</a></li>
+        <li><a class="rounded px-1 py-2 text-muted underline-offset-4 hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3" href="#help">Help</a></li>
+      </ul>
+      <p class="ml-auto rounded-full border-(length:--border-w) border-line px-3 py-1 text-xs text-muted">
+        Viewing as <strong class="text-ink examiner:hidden">student</strong><strong class="hidden text-ink examiner:inline">examiner</strong>
+      </p>
+    </nav>
+  </header>
+
+  <main id="main" class="mx-auto flex max-w-6xl flex-col gap-12 px-4 pb-16 pt-8 sm:px-6 print:gap-6 print:p-0">
+
+    <!-- ===== Intro + art-directed picture ===== -->
+    <section aria-labelledby="intro-h" class="grid items-center gap-8 md:grid-cols-[1fr_1.15fr] print:hidden">
+      <div>
+        <p class="font-mono text-sm uppercase tracking-wider text-ember">CSC413 · Section B · viva day</p>
+        <h1 id="intro-h" class="mt-2 font-head text-4xl font-bold leading-tight text-balance sm:text-5xl">Know your viva before it starts.</h1>
+        <p class="mt-4 max-w-prose text-lg text-muted">
+          Grill asks 8 timed questions about <em>your own</em> repo, each citing a real file and line,
+          then sets a small change request that hidden tests grade in a sandbox.
+          Check in below, watch the 42-second tour, and see what a skill report looks like.
+        </p>
+        <!-- Reduced motion: the ping animation goes, the badge gets a heavier border and bold text instead. -->
+        <p class="mt-6 inline-flex items-center gap-2 rounded-full border-(length:--border-w) border-live/60 px-3 py-1.5 text-sm text-live motion-reduce:border-2 motion-reduce:font-semibold">
+          <span class="relative flex size-2.5" aria-hidden="true">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-live opacity-75 motion-reduce:hidden"></span>
+            <span class="relative size-2.5 rounded-full bg-live"></span>
+          </span>
+          Viva window open · closes 13 Nov, 23:59
+        </p>
+      </div>
+
+      <figure class="m-0">
+        <!-- Art direction: a phone gets a different picture (the question card only),
+             a light-scheme user gets the light screen. -->
+        <picture>
+          <source media="(width < 40rem)" srcset="assets/viva-closeup.svg" width="800" height="1000">
+          <source media="(prefers-color-scheme: light)" srcset="assets/viva-wide-light.svg" width="1600" height="900">
+          <img src="assets/viva-wide-dark.svg" width="1600" height="900"
+               alt="A Grill viva question. It cites lines 44 and 51 of orders.js, asks what happens to the stock count if the insert throws, and a timer shows 1 minute 12 seconds left."
+               class="h-auto w-full rounded-2xl border-(length:--border-w) border-line max-sm:mx-auto max-sm:max-w-80">
+        </picture>
+        <figcaption class="mt-3 text-sm text-muted">
+          Question 3 of a real-looking viva.
+          <span class="max-sm:hidden">On a phone this becomes a close-up of the question card, because 17 lines of code are unreadable at 320&nbsp;px.</span>
+          <span class="sm:hidden">You're seeing the phone close-up. On a wider screen the cited code sits beside the question.</span>
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- ===== Check-in: a 3-step flow (C1) with CSS-only validation (C5) ===== -->
+    <section id="checkin" aria-labelledby="checkin-h" class="steps scroll-mt-24 print:hidden">
+      <h2 id="checkin-h" class="font-head text-3xl font-bold">
+        <span class="examiner:hidden">Check in for your viva</span>
+        <span class="hidden examiner:inline">Review your cohort</span>
+      </h2>
+
+      <!-- Shown only after a successful check-in (the form submits to #checked-in). -->
+      <div id="checked-in" class="mt-4 hidden scroll-mt-24 rounded-2xl border-2 border-ok bg-ok/10 p-5 target:block" tabindex="-1">
+        <p class="font-head text-xl font-bold text-ok">You're checked in.</p>
+        <p class="mt-1">Your repo is pinned at its latest commit. Questions will only cite code from that commit, so pushing now changes nothing. The viva opens when your examiner starts the session.</p>
+        <a href="#checkin" class="mt-2 inline-block text-ember underline">Back to check-in</a>
+      </div>
+
+      <!-- Step 1: role. These radios live outside both forms, so they never block submission. -->
+      <fieldset class="step mt-6 rounded-2xl border-(length:--border-w) border-line bg-panel p-5">
+        <legend class="step-label float-left mb-3 w-full font-semibold">Who is using this page?</legend>
+        <div class="clear-both grid max-w-sm grid-cols-2 gap-1 rounded-xl border-(length:--border-w) border-line bg-bg p-1">
+          <label class="cursor-pointer rounded-lg px-4 py-2.5 text-center font-medium text-muted hover:text-ink has-checked:bg-ember has-checked:text-on-ember has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-ember pointer-coarse:py-3.5">
+            <input type="radio" name="role" id="role-student" value="student" class="sr-only" checked>
+            Student
+          </label>
+          <label class="cursor-pointer rounded-lg px-4 py-2.5 text-center font-medium text-muted hover:text-ink has-checked:bg-ember has-checked:text-on-ember has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-ember pointer-coarse:py-3.5">
+            <input type="radio" name="role" id="role-examiner" value="examiner" class="sr-only">
+            Examiner
+          </label>
+        </div>
+        <p class="mt-3 text-sm text-muted">
+          <span class="examiner:hidden">Students check in and pin a repo. Examiner tools stay hidden.</span>
+          <span class="hidden examiner:inline">The student form is gone; you get the review queue and an override button on the report.</span>
+        </p>
+      </fieldset>
+
+      <!-- ----- Student path ----- -->
+      <form id="checkin-form" action="#checked-in" method="get"
+            class="group/form mt-4 space-y-4 rounded-2xl border-2 border-transparent [counter-reset:todo] has-user-invalid:border-bad/60 [&:not(:has(:invalid))]:border-ok/60 examiner:hidden">
+
+        <!-- Step 2 -->
+        <fieldset class="step space-y-5 rounded-2xl border-(length:--border-w) border-line bg-panel p-5">
+          <legend class="step-label float-left w-full font-semibold">Your repo and your needs</legend>
+
+          <div class="group/field clear-both">
+            <label for="invite" class="block font-medium">Cohort invite code</label>
+            <p id="invite-hint" class="text-sm text-muted">From your examiner's email.</p>
+            <input id="invite" name="invite" type="text" required pattern="GRL-[A-Z0-9]{4}" maxlength="8" autocomplete="off" spellcheck="false"
+                   placeholder="GRL-7Q4K" aria-describedby="invite-hint invite-err"
+                   class="mt-1 w-full max-w-xs rounded-lg border-(length:--border-w) border-line bg-bg px-3 py-2.5 font-mono placeholder:text-muted/60 user-invalid:border-2 user-invalid:border-bad user-valid:border-ok invalid:[counter-increment:todo] pointer-coarse:py-3.5">
+            <p id="invite-err" class="mt-1 hidden text-sm font-medium text-bad group-has-user-invalid/field:block">Use GRL- then 4 capital letters or digits, e.g. GRL-7Q4K.</p>
+          </div>
+
+          <div class="group/field">
+            <label for="repo" class="block font-medium">GitHub repository link</label>
+            <input id="repo" name="repo" type="url" required inputmode="url" spellcheck="false"
+                   pattern="https://github\.com/[A-Za-z0-9_.\-]+/[A-Za-z0-9_.\-]+/?"
+                   placeholder="https://github.com/you/your-repo" aria-describedby="repo-hint repo-err"
+                   class="peer mt-1 w-full rounded-lg border-(length:--border-w) border-line bg-bg px-3 py-2.5 font-mono text-sm placeholder:text-muted/60 user-invalid:border-2 user-invalid:border-bad user-valid:border-ok invalid:[counter-increment:todo] pointer-coarse:py-3.5">
+            <!-- Helper text only while the field is still empty. -->
+            <p id="repo-hint" class="mt-1 hidden text-sm text-muted peer-placeholder-shown:block">Public repos only. Grill pins the newest commit on your branch when you check in.</p>
+            <p id="repo-err" class="mt-1 hidden text-sm font-medium text-bad group-has-user-invalid/field:block">That isn't a GitHub repo link. It should look like https://github.com/name/repo.</p>
+            <p class="mt-1 hidden text-sm text-ok after:content-['✓_Repo_link_looks_right'] group-has-user-valid/field:block"></p>
+          </div>
+
+          <div class="group/field">
+            <label for="branch" class="block font-medium">Branch</label>
+            <input id="branch" name="branch" type="text" required pattern="[A-Za-z0-9._\/\-]+" spellcheck="false"
+                   placeholder="main" aria-describedby="branch-err"
+                   class="mt-1 w-full max-w-xs rounded-lg border-(length:--border-w) border-line bg-bg px-3 py-2.5 font-mono placeholder:text-muted/60 user-invalid:border-2 user-invalid:border-bad user-valid:border-ok invalid:[counter-increment:todo] pointer-coarse:py-3.5">
+            <p id="branch-err" class="mt-1 hidden text-sm font-medium text-bad group-has-user-invalid/field:block">Enter the branch you want examined, such as main.</p>
+          </div>
+
+          <fieldset>
+            <legend class="font-medium">Repo language</legend>
+            <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+              <label class="inline-flex items-center gap-2 pointer-coarse:py-2"><input type="radio" name="lang" id="lang-js" value="js" checked class="size-5 accent-ember"> JavaScript / Node.js</label>
+              <label class="inline-flex items-center gap-2 pointer-coarse:py-2"><input type="radio" name="lang" id="lang-py" value="py" class="size-5 accent-ember"> Python</label>
+            </div>
+            <p class="mt-2 hidden rounded-lg border-l-4 border-warn bg-warn/10 px-3 py-2 text-sm group-has-[#lang-py:checked]/form:block">
+              Python vivas arrive after the first release. Step 3 will offer the waiting list instead of check-in.
+            </p>
+          </fieldset>
+
+          <div>
+            <label class="inline-flex items-start gap-3 pointer-coarse:py-2">
+              <input type="checkbox" id="extra-time" name="extra" value="1.5" class="mt-1 size-5 shrink-0 accent-ember">
+              <span><span class="font-medium">I have an approved extra-time accommodation</span><br><span class="text-sm text-muted">Every question and the change request get 1.5× the time. The clock further down changes too.</span></span>
+            </label>
+            <div class="mt-3 hidden rounded-lg border-(length:--border-w) border-line bg-bg p-3 extra-time:block">
+              <label for="letter" class="text-sm font-medium">Accommodation letter (PDF)</label>
+              <p class="text-sm text-muted">Optional now, needed before marks are released.</p>
+              <input id="letter" name="letter" type="file" accept="application/pdf"
+                     class="mt-2 block w-full text-sm text-muted file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-ember file:px-3 file:py-2 file:font-semibold file:text-on-ember pointer-coarse:file:py-3">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Step 3: the summary reflects choices from steps 1 and 2. -->
+        <fieldset class="step rounded-2xl border-(length:--border-w) border-line bg-panel p-5">
+          <legend class="step-label float-left w-full font-semibold">Check and start</legend>
+
+          <dl class="clear-both grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm sm:max-w-md">
+            <dt class="text-muted">Questions</dt><dd>8, each citing your code</dd>
+            <dt class="text-muted">Time per question</dt>
+            <dd><span class="extra-time:hidden">1 min 30 s</span><span class="hidden font-semibold text-ember extra-time:inline">2 min 15 s (extra time)</span></dd>
+            <dt class="text-muted">Viva total</dt>
+            <dd><span class="extra-time:hidden">12 min</span><span class="hidden font-semibold text-ember extra-time:inline">18 min</span></dd>
+            <dt class="text-muted">Change request</dt>
+            <dd><span class="extra-time:hidden">25 min</span><span class="hidden font-semibold text-ember extra-time:inline">37 min 30 s</span></dd>
+            <dt class="text-muted">Paste</dt><dd>Disabled during answers</dd>
+          </dl>
+
+          <!-- Phone/tablet: the change request needs a real editor. -->
+          <p class="mt-4 rounded-lg border-l-4 border-live bg-live/10 px-3 py-2 text-sm md:hidden">
+            <strong>On a phone?</strong> Check in here, but sit the viva on a laptop. The change request opens a code editor that needs a screen at least 48rem (768&nbsp;px) wide.
+          </p>
+
+          <label class="mt-4 flex items-start gap-3 pointer-coarse:py-2">
+            <input type="checkbox" id="consent" name="consent" required class="mt-1 size-5 shrink-0 accent-ember invalid:[counter-increment:todo]">
+            <span>I understand the questions are timed, paste is disabled, and follow-ups build on my answers.</span>
+          </label>
+
+          <!-- Live progress: a CSS counter totals every still-invalid required field above. -->
+          <p class="mt-4 hidden text-sm text-warn group-has-invalid/form:block">
+            <span class="font-mono font-bold after:content-[counter(todo)]"></span> required item(s) still to complete before you can check in.
+          </p>
+          <p class="mt-4 text-sm font-medium text-ok group-has-invalid/form:hidden">All set. Checking in pins your repo at its latest commit.</p>
+
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button type="submit" class="rounded-xl bg-ember px-5 py-3 font-semibold text-on-ember hover:brightness-110 group-has-[#lang-py:checked]/form:hidden pointer-coarse:px-6 pointer-coarse:py-4">Check in and pin my repo</button>
+            <a href="#waitlist" class="hidden rounded-xl bg-warn px-5 py-3 font-semibold text-bg group-has-[#lang-py:checked]/form:inline-block">Join the Python waiting list</a>
+          </div>
+        </fieldset>
+      </form>
+
+      <!-- ----- Examiner path ----- -->
+      <div class="mt-4 hidden examiner:block">
+        <fieldset class="step rounded-2xl border-(length:--border-w) border-line bg-panel p-5 [&:has(#f-prov:checked)_li[data-state=confirmed]]:hidden">
+          <legend class="step-label float-left w-full font-semibold">Pick what to review</legend>
+          <div class="clear-both flex flex-wrap gap-x-6 gap-y-2">
+            <label class="inline-flex items-center gap-2 pointer-coarse:py-2"><input type="radio" name="queue" id="f-prov" checked class="size-5 accent-ember"> Provisional only</label>
+            <label class="inline-flex items-center gap-2 pointer-coarse:py-2"><input type="radio" name="queue" id="f-all" class="size-5 accent-ember"> All sessions</label>
+          </div>
+          <ul class="mt-4 divide-y divide-line rounded-xl border-(length:--border-w) border-line bg-bg" aria-label="Sessions">
+            <li data-state="provisional" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
+              <span class="font-medium">Student 01</span><span class="font-mono text-xs text-muted">shop-api @ a1b2c3d</span>
+              <span class="rounded-full bg-warn/15 px-2 py-0.5 text-xs font-medium text-warn">Provisional · 82</span>
+              <a href="#q6" class="ml-auto text-sm text-ember underline pointer-coarse:py-2">Unanswered Q6</a>
+            </li>
+            <li data-state="provisional" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
+              <span class="font-medium">Student 06</span><span class="font-mono text-xs text-muted">todo-rest @ c02e6f1</span>
+              <span class="rounded-full bg-warn/15 px-2 py-0.5 text-xs font-medium text-warn">Provisional · 44</span>
+              <span class="ml-auto text-sm text-muted">1 of 5 hidden tests</span>
+            </li>
+            <li data-state="confirmed" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
+              <span class="font-medium">Student 05</span><span class="font-mono text-xs text-muted">url-shortener @ 57bc9d2</span>
+              <span class="rounded-full bg-ok/15 px-2 py-0.5 text-xs font-medium text-ok">Confirmed · 91</span>
+            </li>
+            <li data-state="confirmed" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
+              <span class="font-medium">Student 12</span><span class="font-mono text-xs text-muted">auth-service @ d90c4e5</span>
+              <span class="rounded-full bg-ok/15 px-2 py-0.5 text-xs font-medium text-ok">Confirmed · 85</span>
+            </li>
+          </ul>
+        </fieldset>
+        <p class="mt-3 text-sm text-muted"><a href="#report" class="text-ember underline">Jump to Student 01's report</a> to confirm or override the score.</p>
+      </div>
+    </section>
+
+    <!-- ===== The clock: CSS-only countdown with a designed still version ===== -->
+    <section id="clock" aria-labelledby="clock-h" class="scroll-mt-24 print:hidden">
+      <h2 id="clock-h" class="font-head text-3xl font-bold">How the clock behaves</h2>
+      <div class="mt-5 grid items-center gap-6 rounded-2xl border-(length:--border-w) border-line bg-panel p-5 sm:grid-cols-[auto_1fr]">
+        <div class="countdown mx-auto grid size-40 place-items-center rounded-full font-mono text-3xl font-medium" aria-hidden="true"></div>
+        <div>
+          <p class="text-lg">
+            Each question gets
+            <strong class="extra-time:hidden">90 seconds</strong><strong class="hidden text-ember extra-time:inline">135 seconds (your extra time)</strong>.
+            The ring turns <strong class="text-warn">amber for the last 30 seconds</strong>, and the time is always written as text too.
+          </p>
+          <p class="mt-2 text-sm text-muted motion-reduce:hidden">This demo clock runs in real time. Turn on "reduce motion" in your OS to see the still version.</p>
+
+          <!-- Reduced motion: a still, labelled bar keeps the meaning of "amber = hurry". -->
+          <div class="mt-3 hidden motion-reduce:block">
+            <p class="text-sm font-medium">Still version (reduce motion is on):</p>
+            <div class="mt-2 flex h-4 overflow-hidden rounded-full border-(length:--border-w) border-line" aria-hidden="true">
+              <span class="block basis-2/3 bg-ember extra-time:basis-7/9"></span>
+              <span class="block flex-1 bg-warn [background-image:repeating-linear-gradient(45deg,transparent_0_6px,rgb(0_0_0/.25)_6px_9px)]"></span>
+            </div>
+            <div class="mt-1 flex justify-between font-mono text-xs text-muted">
+              <span>start</span><span>last 30 s · amber, striped</span><span>0 s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Video tour ===== -->
+    <!-- Phones: moved to the end of the page (order-last) since phone users come to check in,
+         and the size is shown so they can decide before spending data. -->
+    <section id="tour" aria-labelledby="tour-h" class="scroll-mt-24 max-md:order-last print:hidden">
+      <h2 id="tour-h" class="font-head text-3xl font-bold">42-second tour of a viva</h2>
+      <p class="mt-1 text-sm text-muted md:hidden">Video · 42 s · about 0.45&nbsp;MB. Captions on by default.</p>
+      <figure class="m-0 mt-4">
+        <video controls preload="metadata" poster="assets/viva-tour-poster.jpg" width="1280" height="720"
+               class="h-auto w-full rounded-2xl border-(length:--border-w) border-line bg-black short-landscape:mx-auto short-landscape:max-h-[85vh] short-landscape:w-auto">
+          <source src="assets/viva-tour.webm" type="video/webm">
+          <source src="assets/viva-tour.mp4" type="video/mp4">
+          <track kind="captions" src="captions/viva-tour.en.vtt" srclang="en" label="English captions" default>
+          <track kind="chapters" src="captions/viva-tour.chapters.vtt" srclang="en" label="Chapters">
+          Your browser can't play this video. <a href="assets/viva-tour.mp4">Download the tour (MP4)</a>.
+        </video>
+        <figcaption class="mt-3 text-sm text-muted">
+          Submit, pin, a timed question, the change request and the report. There's no voice-over: captions show who is speaking
+          (<span class="text-ember">Grill</span> or <span class="text-live">Student</span>) and the timer sounds.
+        </figcaption>
+      </figure>
+      <details class="group/tr mt-3 rounded-xl border-(length:--border-w) border-line bg-panel">
+        <summary class="cursor-pointer px-4 py-3 font-medium marker:text-ember pointer-coarse:py-4">Read the transcript</summary>
+        <div class="space-y-2 px-4 pb-4 text-sm">
+          <p><b>Student:</b> I'm submitting my shop-api repo, main branch.</p>
+          <p><b>Grill:</b> Pinned at commit a1b2c3d. Every question will cite this exact code.</p>
+          <p><b>Grill:</b> I found a transaction with no rollback. Writing eight questions about your own lines.</p>
+          <p><b>Grill:</b> You open a transaction on line 44. If the insert on line 51 throws, what happens to the stock count?</p>
+          <p><b>Student:</b> The UPDATE already ran, so stock drops but no order row exists. [Timer beeps three times: 10 seconds left.] And conn.release() is missing on both paths.</p>
+          <p><b>Grill:</b> Change request: a failed order must leave the stock unchanged. Always release the connection. [Chime] Hidden tests in the sandbox: 4 of 5 passed.</p>
+          <p><b>Grill:</b> Viva 82, provisional. Your examiner confirms or overrides it.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ===== Skill report (prints as an A4 document) ===== -->
+    <section id="report" data-state="provisional" aria-labelledby="report-h" class="group/report scroll-mt-24">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="font-mono text-sm uppercase tracking-wider text-ember print:hidden">Sample report</p>
+          <h2 id="report-h" class="font-head text-3xl font-bold">Viva skill report · Student 01</h2>
+        </div>
+        <p class="text-sm text-muted print:hidden">Printing this page gives you just this report on A4.</p>
+      </div>
+
+      <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm sm:grid-cols-[auto_1fr_auto_1fr]">
+        <dt class="text-muted">Repo</dt><dd><a href="https://github.com/student01/shop-api/tree/a1b2c3d" class="font-mono text-ember underline break-all">student01/shop-api</a></dd>
+        <dt class="text-muted">Commit</dt><dd class="font-mono">a1b2c3d (main)</dd>
+        <dt class="text-muted">Cohort</dt><dd>CSC413 · Section B</dd>
+        <dt class="text-muted">Sat</dt><dd>10 Nov 2026, 10:05–10:47</dd>
+      </dl>
+
+      <!-- Domain situation: a provisional score. -->
+      <p class="mt-4 hidden items-start gap-3 rounded-xl border-l-4 border-warn bg-warn/10 px-4 py-3 group-data-[state=provisional]/report:flex">
+        <span aria-hidden="true" class="font-bold text-warn">!</span>
+        <span><strong>Provisional.</strong> AI scores are advisory until your examiner, Dr. Rao, confirms or overrides them.
+        <button type="button" popovertarget="why-provisional" class="ml-1 text-ember underline print:hidden pointer-coarse:py-2">Why?</button></span>
+      </p>
+
+      <div id="override-logged" class="mt-4 hidden scroll-mt-24 rounded-xl border-2 border-ok bg-ok/10 px-4 py-3 target:block print:hidden" tabindex="-1">
+        <strong class="text-ok">Override recorded.</strong> Your reason is now in the audit trail, and the student will see it next to the score.
+      </div>
+
+      <div class="mt-5 grid gap-4 sm:grid-cols-3">
+        <div class="score-tile rounded-2xl border-(length:--border-w) border-line bg-panel p-4">
+          <p class="text-sm text-muted">Viva</p>
+          <p class="font-head text-4xl font-bold">82<span class="text-lg text-muted">/100</span></p>
+        </div>
+        <div class="score-tile rounded-2xl border-(length:--border-w) border-line bg-panel p-4">
+          <p class="text-sm text-muted">Hidden tests</p>
+          <p class="font-head text-4xl font-bold">4<span class="text-lg text-muted">/5</span></p>
+        </div>
+        <div class="score-tile rounded-2xl border-(length:--border-w) border-line bg-panel p-4">
+          <p class="text-sm text-muted">Viva time used</p>
+          <p class="font-head text-4xl font-bold">11:04<span class="text-lg text-muted"> of 12:00</span></p>
+        </div>
+      </div>
+
+      <!-- Role-dependent actions -->
+      <div class="mt-4 flex flex-wrap gap-3 print:hidden">
+        <button type="button" popovertarget="override" class="hidden rounded-xl bg-ember px-4 py-2.5 font-semibold text-on-ember examiner:inline-block pointer-coarse:py-3.5">Confirm or override score</button>
+        <details class="w-full rounded-xl border-(length:--border-w) border-line bg-panel open:bg-card examiner:hidden">
+          <summary class="cursor-pointer px-4 py-3 font-medium marker:text-ember pointer-coarse:py-4">Ask for a re-check</summary>
+          <p class="px-4 pb-4 text-sm text-muted">Tell Dr. Rao which question you think was misjudged, quoting your answer. Re-checks go to the examiner, not back to the AI, and every change is logged.</p>
+        </details>
+      </div>
+
+      <h3 class="mt-8 font-head text-xl font-bold">Questions</h3>
+      <p class="mt-1 text-sm text-muted print:hidden">
+        <span class="hidden hover-fine:inline">Hover or tab to a question to see why it got its verdict.</span>
+        <span class="hover-fine:hidden">Each verdict's reason is shown under the answer.</span>
+      </p>
+
+      <!-- On a mouse device the "why" text is folded until hover/focus so 8 questions can be scanned fast;
+           on touch it is always open because there is no hover. -->
+      <ol class="questions mt-4 list-outside space-y-3 pl-12">
+        <li id="q1" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/db/pool.js#L3-L12" class="font-mono text-sm text-ember underline break-all">src/db/pool.js · 3–12</a>
+            <span class="verdict rounded-full bg-ok/15 px-2.5 py-0.5 text-xs font-semibold text-ok" data-verdict="strong">Strong</span>
+          </div>
+          <p class="mt-2 font-medium">Why does the pool set <code class="font-mono">connectionLimit: 10</code>, and what happens to request 11?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">It queues until a connection is released; it doesn't fail unless the queue limit is hit.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Correct queueing behaviour, and named the queueLimit option without being asked.</p>
+        </li>
+        <li id="q2" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/routes/items.js#L18-L27" class="font-mono text-sm text-ember underline break-all">src/routes/items.js · 18–27</a>
+            <span class="verdict rounded-full bg-ok/15 px-2.5 py-0.5 text-xs font-semibold text-ok" data-verdict="strong">Strong</span>
+          </div>
+          <p class="mt-2 font-medium">This route builds SQL with <code class="font-mono">?</code> placeholders. What attack does that stop?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">SQL injection, because the driver sends the values separately from the query text.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Right attack and the right mechanism.</p>
+        </li>
+        <li id="q3" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/routes/orders.js#L42-L58" class="font-mono text-sm text-ember underline break-all">src/routes/orders.js · 42–58</a>
+            <span class="verdict rounded-full bg-warn/15 px-2.5 py-0.5 text-xs font-semibold text-warn" data-verdict="partial">Partial</span>
+          </div>
+          <p class="mt-2 font-medium">You open a transaction on line 44. If the insert on line 51 throws, what happens to the stock count, and where is the connection released?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">The UPDATE already ran, so stock drops but no order exists. The catch never calls rollback, and conn.release() is missing on both paths.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Found both bugs, but in the follow-up said the stock is restored when the connection closes, which isn't true while the transaction is still open.</p>
+        </li>
+        <li id="q4" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/middleware/auth.js#L8-L21" class="font-mono text-sm text-ember underline break-all">src/middleware/auth.js · 8–21</a>
+            <span class="verdict rounded-full bg-ok/15 px-2.5 py-0.5 text-xs font-semibold text-ok" data-verdict="strong">Strong</span>
+          </div>
+          <p class="mt-2 font-medium">What does this middleware send back when the token has expired, and why that status code?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">401, because the client isn't authenticated any more. 403 would mean "logged in but not allowed".</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Correct code and a clear 401 vs 403 distinction.</p>
+        </li>
+        <li id="q5" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/app.js#L30-L36" class="font-mono text-sm text-ember underline break-all">src/app.js · 30–36</a>
+            <span class="verdict rounded-full bg-warn/15 px-2.5 py-0.5 text-xs font-semibold text-warn" data-verdict="partial">Partial</span>
+          </div>
+          <p class="mt-2 font-medium">Your error handler is registered before the routes. Which errors will it never see?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">Errors thrown inside the routes, because Express runs middleware in order.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Right idea, but didn't notice that async errors also need to be passed to next().</p>
+        </li>
+        <li id="q6" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/services/cart.js#L40-L52" class="font-mono text-sm text-ember underline break-all">src/services/cart.js · 40–52</a>
+            <span class="verdict rounded-full bg-bad/15 px-2.5 py-0.5 text-xs font-semibold text-bad" data-verdict="missed">Missed</span>
+          </div>
+          <p class="mt-2 font-medium">Two requests add the last item to two carts at once. Which line lets both succeed?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted"></blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> The timer ran out. A good answer points to line 44, which reads stock before writing it without a lock.</p>
+        </li>
+        <li id="q7" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/package.json#L6-L9" class="font-mono text-sm text-ember underline break-all">package.json · 6–9</a>
+            <span class="verdict rounded-full bg-ok/15 px-2.5 py-0.5 text-xs font-semibold text-ok" data-verdict="strong">Strong</span>
+          </div>
+          <p class="mt-2 font-medium">What does <code class="font-mono">npm test</code> actually run here?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">node --test on the test folder, the built-in runner, no Jest.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Exact.</p>
+        </li>
+        <li id="q8" class="group/q scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel p-4 target:ring-2 target:ring-ember">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <a href="https://github.com/student01/shop-api/blob/a1b2c3d/src/routes/orders.js#L60-L74" class="font-mono text-sm text-ember underline break-all">src/routes/orders.js · 60–74</a>
+            <span class="verdict rounded-full bg-ok/15 px-2.5 py-0.5 text-xs font-semibold text-ok" data-verdict="strong">Strong</span>
+          </div>
+          <p class="mt-2 font-medium">GET /orders has no LIMIT. What breaks first as the table grows?</p>
+          <blockquote class="answer mt-2 border-l-2 border-line pl-3 text-sm italic text-muted">Response time and memory, since every row is loaded and serialised. I'd add page and limit query params.</blockquote>
+          <p class="evidence mt-2 text-sm hover-fine:max-h-0 hover-fine:overflow-hidden hover-fine:opacity-0 hover-fine:group-hover/q:max-h-40 hover-fine:group-hover/q:opacity-100 hover-fine:group-focus-within/q:max-h-40 hover-fine:group-focus-within/q:opacity-100 hover-fine:group-target/q:max-h-40 hover-fine:group-target/q:opacity-100 motion-safe:transition-all"><b>Why:</b> Identified the cost and proposed a fix.</p>
+        </li>
+      </ol>
+
+      <h3 class="mt-8 font-head text-xl font-bold">Change request · hidden tests</h3>
+      <p class="mt-1 text-sm text-muted">Task: make a failed order leave stock unchanged and always release the connection.</p>
+      <div class="relative mt-3 overflow-x-auto rounded-xl border-(length:--border-w) border-line">
+        <table class="w-full min-w-[30rem] text-left text-sm">
+          <caption class="sr-only">Hidden test results for the change request</caption>
+          <thead class="bg-card text-xs uppercase tracking-wider text-muted">
+            <tr><th scope="col" class="px-4 py-2.5">Test</th><th scope="col" class="px-4 py-2.5">Result</th><th scope="col" class="px-4 py-2.5">Time</th></tr>
+          </thead>
+          <!-- Striping counts only real test rows (nth-child … of .test), not the note row. -->
+          <tbody class="[&>tr:nth-child(odd_of_.test)]:bg-card">
+            <tr class="test"><td class="px-4 py-2.5 font-mono">rolls back stock when insert fails</td><td class="px-4 py-2.5 text-ok">Pass</td><td class="px-4 py-2.5 font-mono">41 ms</td></tr>
+            <tr class="test"><td class="px-4 py-2.5 font-mono">releases connection on success</td><td class="px-4 py-2.5 text-ok">Pass</td><td class="px-4 py-2.5 font-mono">12 ms</td></tr>
+            <tr class="test"><td class="px-4 py-2.5 font-mono">releases connection on error</td><td class="px-4 py-2.5 text-ok">Pass</td><td class="px-4 py-2.5 font-mono">15 ms</td></tr>
+            <tr class="test has-[.fail]:bg-bad/10! has-[.fail]:font-semibold"><td class="px-4 py-2.5 font-mono">returns 409 when stock is short</td><td class="fail px-4 py-2.5 text-bad">Fail · got 500</td><td class="px-4 py-2.5 font-mono">9 ms</td></tr>
+            <tr><td colspan="3" class="px-4 py-2 text-xs text-muted">Sandbox: no network, non-root, 30 s limit, destroyed after the run.</td></tr>
+            <tr class="test"><td class="px-4 py-2.5 font-mono">existing order routes still pass</td><td class="px-4 py-2.5 text-ok">Pass</td><td class="px-4 py-2.5 font-mono">88 ms</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Print only: a paper report needs signatures. -->
+      <div class="mt-10 hidden grid-cols-2 gap-10 print:grid">
+        <div><div class="h-12 border-b border-black"></div><p class="mt-1 text-sm">Examiner signature and date</p></div>
+        <div><div class="h-12 border-b border-black"></div><p class="mt-1 text-sm">Student acknowledgement</p></div>
+        <p class="col-span-2 text-xs">Generated by Grill from commit a1b2c3d. Each citation above links to the exact lines on GitHub.</p>
+      </div>
+    </section>
+
+    <!-- ===== Help ===== -->
+    <section id="help" aria-labelledby="help-h" class="scroll-mt-24 print:hidden">
+      <h2 id="help-h" class="font-head text-3xl font-bold">Before you start</h2>
+      <div class="mt-4 space-y-2">
+        <details class="rounded-xl border-(length:--border-w) border-line bg-panel open:bg-card">
+          <summary class="cursor-pointer px-4 py-3 font-medium marker:text-ember pointer-coarse:py-4">Why is paste disabled?</summary>
+          <p class="px-4 pb-4 text-sm text-muted">The viva checks that you can explain your code in your own words. Follow-up questions build on what you just wrote, so a pasted answer usually falls apart one question later.</p>
+        </details>
+        <details class="rounded-xl border-(length:--border-w) border-line bg-panel open:bg-card">
+          <summary class="cursor-pointer px-4 py-3 font-medium marker:text-ember pointer-coarse:py-4">My repo has no tests. Is that a problem?</summary>
+          <p class="px-4 pb-4 text-sm text-muted">No. Grill brings its own harness on node:test and calls your exported functions or HTTP routes directly.</p>
+        </details>
+        <details id="waitlist" class="scroll-mt-24 rounded-xl border-(length:--border-w) border-line bg-panel open:bg-card target:ring-2 target:ring-warn">
+          <summary class="cursor-pointer px-4 py-3 font-medium marker:text-ember pointer-coarse:py-4">Python waiting list</summary>
+          <p class="px-4 pb-4 text-sm text-muted">Python support is planned after the first release. Ask Dr. Rao to add your name; until then you can sit the viva on a JavaScript project.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t-(length:--border-w) border-line print:hidden">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-muted sm:px-6">
+      <p>All media made for this project: the viva screen images (SVG), the tour video and its sounds, and the captions. Sample data only; no real students.</p>
+    </div>
+  </footer>
+
+  <!-- ===== Popovers (native HTML, no JS) ===== -->
+  <div id="why-provisional" popover class="m-auto max-w-md rounded-2xl border-(length:--border-w) border-line bg-panel p-6 text-ink shadow-2xl backdrop:bg-black/60 open:ring-2 open:ring-warn">
+    <h2 class="font-head text-xl font-bold">Why is my score provisional?</h2>
+    <p class="mt-2 text-sm text-muted">Grill's model proposes a score; a person decides it. Your examiner reads the evidence under each question and confirms the score or overrides it with a written reason.</p>
+    <button type="button" popovertarget="why-provisional" popovertargetaction="hide" class="mt-4 rounded-lg bg-ember px-4 py-2 font-semibold text-on-ember">Got it</button>
+  </div>
+
+  <div id="override" popover class="m-auto w-[min(28rem,calc(100%-2rem))] rounded-2xl border-(length:--border-w) border-line bg-panel p-6 text-ink shadow-2xl backdrop:bg-black/70">
+    <form action="#override-logged" method="get" class="group/ov space-y-4">
+      <h2 class="font-head text-xl font-bold">Confirm or override · Student 01</h2>
+      <p class="text-sm text-muted">Current viva score <span class="font-mono text-ember">82</span>. Every override is logged with its reason.</p>
+      <div class="group/field">
+        <label for="ov-score" class="block font-medium">Final viva score</label>
+        <input id="ov-score" name="score" type="number" min="0" max="100" required value="82"
+               class="mt-1 w-28 rounded-lg border-(length:--border-w) border-line bg-bg px-3 py-2 font-mono user-invalid:border-2 user-invalid:border-bad">
+        <p class="mt-1 hidden text-sm text-bad group-has-user-invalid/field:block">A score from 0 to 100.</p>
+      </div>
+      <div class="group/field">
+        <label for="ov-reason" class="block font-medium">Reason (at least 20 characters)</label>
+        <textarea id="ov-reason" name="reason" rows="3" required minlength="20" placeholder="e.g. Q3 follow-up showed they knew the rollback path."
+                  class="peer mt-1 w-full rounded-lg border-(length:--border-w) border-line bg-bg px-3 py-2 placeholder:text-muted/60 user-invalid:border-2 user-invalid:border-bad user-valid:border-ok"></textarea>
+        <p class="mt-1 hidden text-sm text-bad group-has-user-invalid/field:block">Write a reason the student can read: at least 20 characters.</p>
+      </div>
+      <div class="flex flex-wrap justify-end gap-2">
+        <button type="button" popovertarget="override" popovertargetaction="hide" class="rounded-lg px-4 py-2 text-muted hover:text-ink">Cancel</button>
+        <button type="submit" class="rounded-lg bg-ember px-4 py-2 font-semibold text-on-ember">Save and log</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

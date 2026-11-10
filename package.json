@@ -1,0 +1,14 @@
+{
+  "name": "grill",
+  "private": true,
+  "description": "Grill: automated viva for colleges. The site lives in landing/. Tailwind is compiled ahead of time for viva-day.html, which ships no JavaScript.",
+  "scripts": {
+    "build:viva": "tailwindcss -i landing/src/viva-day.input.css -o landing/css/viva-day.css --minify",
+    "watch:viva": "tailwindcss -i landing/src/viva-day.input.css -o landing/css/viva-day.css --watch",
+    "pack:lab2": "bash scripts/pack-lab2.sh"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.17",
+    "tailwindcss": "4.1.17"
+  }
+}
